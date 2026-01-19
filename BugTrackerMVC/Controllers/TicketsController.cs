@@ -151,6 +151,25 @@ public class TicketsController : Controller
         await _ctx.SaveChangesAsync();
         return RedirectToAction(nameof(Details), new { id = ticket.Id });
     }
+    
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var userId = _userMgr.GetUserId(User);
+        var isAdmin = User.IsInRole("Admin");
+
+        var ticket = await _ctx.Tickets.FirstOrDefaultAsync(t => t.Id == id);
+        if (ticket is null) return NotFound();
+        if (!isAdmin && ticket.OwnerId != userId) return Forbid();
+
+        _ctx.Tickets.Remove(ticket);
+        await _ctx.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+    }
+
+
 
     private async Task FillLists(TicketFormVm vm)
     {

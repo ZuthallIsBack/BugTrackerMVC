@@ -1,0 +1,24 @@
+﻿@model BugTrackerMVC.Models.Ticket
+
+<h2>Usuń zgłoszenie</h2>
+
+<p>Czy na pewno chcesz usunąć zgłoszenie <strong>#@Model.Id</strong>?</p>
+
+<dl class="row">
+    <dt class="col-sm-2">Tytuł</dt>
+    <dd class="col-sm-10">@Model.Title</dd>
+    <dt class="col-sm-2">Status</dt>
+    <dd class="col-sm-10">@Model.Status</dd>
+    <dt class="col-sm-2">Priorytet</dt>
+    <dd class="col-sm-10">@Model.Priority</dd>
+    <dt class="col-sm-2">Projekt</dt>
+    <dd class="col-sm-10">@Model.Project?.Name</dd>
+    <dt class="col-sm-2">Kategoria</dt>
+    <dd class="col-sm-10">@Model.Category?.Name</dd>
+</dl>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <button type="submit" class="btn btn-danger">Usuń</button>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Anuluj</a>
+</form>

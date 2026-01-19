@@ -34,7 +34,8 @@
                 <td>@t.Category?.Name</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@t.Id">Szczegóły</a> |
-                    <a asp-action="Edit" asp-route-id="@t.Id">Edytuj</a>
+                    <a asp-action="Edit" asp-route-id="@t.Id">Edytuj</a> |
+                    <a asp-action="Delete" asp-route-id="@t.Id">Usuń</a>  
                 </td>
             </tr>
         }

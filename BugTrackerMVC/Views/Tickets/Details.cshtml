@@ -9,6 +9,10 @@
 <p><b>Projekt:</b> @Model.Project?.Name</p>
 <p><b>Kategoria:</b> @Model.Category?.Name</p>
 <p><b>Opis:</b><br />@Model.Description</p>
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edytuj</a> |
+    <a asp-action="Delete" asp-route-id="@Model.Id">Usuń</a>
+</p>
 
 <hr />
 

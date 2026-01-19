@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\HomeController1.cs" />
+    <Compile Remove="Views\Users\**\*.cshtml.cs" />
+    <Compile Remove="Views\Tickets\**\*.cshtml.cs" />
   </ItemGroup>
 
   <ItemGroup>

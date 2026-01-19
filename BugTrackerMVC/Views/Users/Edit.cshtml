@@ -1,0 +1,30 @@
+﻿@model BugTrackerMVC.Models.ViewModels.UserEditVm
+
+<h2>Edytuj użytkownika</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="All"></div>
+
+    <label>Email</label>
+    <input asp-for="Email" />
+    <span asp-validation-for="Email"></span>
+
+    <label>Nazwa</label>
+    <input asp-for="DisplayName" />
+    <span asp-validation-for="DisplayName"></span>
+
+    <label>Nowe hasło (opcjonalnie)</label>
+    <input asp-for="NewPassword" type="password" />
+    <span asp-validation-for="NewPassword"></span>
+
+    <label>Rola</label>
+    <select asp-for="Role" asp-items="Model.Roles"></select>
+    <span asp-validation-for="Role"></span>
+
+    <button type="submit">Zapisz</button>
+</form>
+
+@section Scripts {
+         <partial name="_ValidationScriptsPartial" />
+}

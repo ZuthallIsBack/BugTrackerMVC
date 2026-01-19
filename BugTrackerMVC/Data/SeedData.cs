@@ -17,9 +17,11 @@ public static class SeedData
         var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
         const string adminRole = "Admin";
+        const string userRole = "User";
         if (!await roleMgr.RoleExistsAsync(adminRole))
             await roleMgr.CreateAsync(new IdentityRole(adminRole));
-
+        if (!await roleMgr.RoleExistsAsync(userRole))
+            await roleMgr.CreateAsync(new IdentityRole(userRole));
         var adminEmail = "admin@demo.local";
         var admin = await userMgr.Users.FirstOrDefaultAsync(u => u.Email == adminEmail);
         if (admin is null)
@@ -49,7 +51,8 @@ public static class SeedData
             };
             await userMgr.CreateAsync(user, "User123!");
         }
-
+        if (!await userMgr.IsInRoleAsync(user, userRole))
+            await userMgr.AddToRoleAsync(user, userRole);
         if (!await ctx.Projects.AnyAsync())
         {
             ctx.Projects.AddRange(
