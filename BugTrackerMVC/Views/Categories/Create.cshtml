@@ -1,0 +1,21 @@
+﻿@model BugTrackerMVC.Models.Category
+
+<h2>Dodaj kategorię</h2>
+
+<form asp-action="Create" method="post">
+  <div asp-validation-summary="All"></div>
+
+  <label>Nazwa</label>
+  <input asp-for="Name" />
+  <span asp-validation-for="Name"></span>
+
+  <label>Opis</label>
+  <input asp-for="Description" />
+  <span asp-validation-for="Description"></span>
+
+  <button type="submit">Zapisz</button>
+</form>
+
+@section Scripts {
+	 <partial name="_ValidationScriptsPartial" />
+}

@@ -10,8 +10,9 @@ public class Comment
     public int TicketId { get; set; }
     public Ticket? Ticket { get; set; }
 
-    // autor (IdentityUser.Id)
+    [Required]
     public string AuthorId { get; set; } = "";
+    public ApplicationUser? Author { get; set; }
 
     [Required, StringLength(1500, MinimumLength = 2)]
     public string Body { get; set; } = "";

@@ -1,0 +1,46 @@
+﻿@model BugTrackerMVC.Models.Ticket
+@using BugTrackerMVC.Models.ViewModels
+
+<h2>Zgłoszenie #@Model.Id</h2>
+
+<p><b>Tytuł:</b> @Model.Title</p>
+<p><b>Status:</b> @Model.Status</p>
+<p><b>Priorytet:</b> @Model.Priority</p>
+<p><b>Projekt:</b> @Model.Project?.Name</p>
+<p><b>Kategoria:</b> @Model.Category?.Name</p>
+<p><b>Opis:</b><br />@Model.Description</p>
+
+<hr />
+
+<h3>Komentarze</h3>
+@if (Model.Comments?.Count > 0)
+{
+        <ul>
+        @foreach (var c in Model.Comments.OrderByDescending(x => x.CreatedAt))
+        {
+                <li>
+                    <b>@(c.Author?.DisplayName ?? c.Author?.Email ?? "user")</b>
+                    (@c.CreatedAt.ToLocalTime()):
+                @c.Body
+                </li>
+        }
+        </ul>
+}
+else
+{
+        <p>Brak komentarzy.</p>
+}
+
+<hr />
+
+<h3>Dodaj komentarz</h3>
+@{
+    var vm = (CommentCreateVm)ViewBag.CommentVm;
+}
+<form asp-controller="Comments" asp-action="Create" method="post">
+    <input type="hidden" name="TicketId" value="@vm.TicketId" />
+    <div>
+        <textarea name="Body" minlength="2" maxlength="1500" required></textarea>
+    </div>
+    <button type="submit">Dodaj</button>
+</form>

@@ -1,0 +1,36 @@
+﻿@model BugTrackerMVC.Models.ViewModels.TicketFormVm
+@using BugTrackerMVC.Models
+
+<h2>Dodaj zgłoszenie</h2>
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="All"></div>
+
+    <label>Tytuł</label>
+    <input asp-for="Title" />
+    <span asp-validation-for="Title"></span>
+
+    <label>Opis</label>
+    <textarea asp-for="Description"></textarea>
+    <span asp-validation-for="Description"></span>
+
+    <label>Status</label>
+    <select asp-for="Status" asp-items="Html.GetEnumSelectList<TicketStatus>()"></select>
+
+    <label>Priorytet</label>
+    <select asp-for="Priority" asp-items="Html.GetEnumSelectList<TicketPriority>()"></select>
+
+    <label>Projekt</label>
+    <select asp-for="ProjectId" asp-items="Model.Projects"></select>
+    <span asp-validation-for="ProjectId"></span>
+
+    <label>Kategoria</label>
+    <select asp-for="CategoryId" asp-items="Model.Categories"></select>
+    <span asp-validation-for="CategoryId"></span>
+
+    <button type="submit">Zapisz</button>
+</form>
+
+@section Scripts {
+     <partial name="_ValidationScriptsPartial" />
+}

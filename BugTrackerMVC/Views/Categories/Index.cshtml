@@ -1,0 +1,18 @@
+﻿@model List<BugTrackerMVC.Models.Category>
+
+<h2>Kategorie (Admin)</h2>
+<a asp-action="Create">Dodaj</a>
+
+<table class="table">
+  <thead><tr><th>ID</th><th>Nazwa</th><th></th></tr></thead>
+  <tbody>
+        @foreach (var c in Model)
+        {
+        <tr>
+          <td>@c.Id</td>
+          <td>@c.Name</td>
+          <td><a asp-action="Edit" asp-route-id="@c.Id">Edytuj</a></td>
+        </tr>
+        }
+  </tbody>
+</table>

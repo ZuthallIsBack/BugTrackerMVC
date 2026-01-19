@@ -1,0 +1,22 @@
+﻿@model BugTrackerMVC.Models.Project
+
+<h2>Edytuj projekt</h2>
+
+<form asp-action="Edit" method="post">
+  <input type="hidden" name="id" value="@Model.Id" />
+  <div asp-validation-summary="All"></div>
+
+  <label>Nazwa</label>
+  <input asp-for="Name" />
+  <span asp-validation-for="Name"></span>
+
+  <label>Opis</label>
+  <input asp-for="Description" />
+  <span asp-validation-for="Description"></span>
+
+  <button type="submit">Zapisz</button>
+</form>
+
+@section Scripts {
+	 <partial name="_ValidationScriptsPartial" />
+}

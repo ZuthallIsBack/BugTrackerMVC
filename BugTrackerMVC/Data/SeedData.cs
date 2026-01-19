@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using BugTrackerMVC.Models;
 
 namespace BugTrackerMVC.Data;
 
@@ -13,7 +14,7 @@ public static class SeedData
         await ctx.Database.MigrateAsync();
 
         var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+        var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
         const string adminRole = "Admin";
         if (!await roleMgr.RoleExistsAsync(adminRole))
@@ -23,7 +24,13 @@ public static class SeedData
         var admin = await userMgr.Users.FirstOrDefaultAsync(u => u.Email == adminEmail);
         if (admin is null)
         {
-            admin = new IdentityUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
+            admin = new ApplicationUser
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
+                EmailConfirmed = true,
+                DisplayName = "Administrator"
+            };
             await userMgr.CreateAsync(admin, "Admin123!");
         }
         if (!await userMgr.IsInRoleAsync(admin, adminRole))
@@ -33,23 +40,29 @@ public static class SeedData
         var user = await userMgr.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
         if (user is null)
         {
-            user = new IdentityUser { UserName = userEmail, Email = userEmail, EmailConfirmed = true };
+            user = new ApplicationUser
+            {
+                UserName = userEmail,
+                Email = userEmail,
+                EmailConfirmed = true,
+                DisplayName = "Użytkownik"
+            };
             await userMgr.CreateAsync(user, "User123!");
         }
 
         if (!await ctx.Projects.AnyAsync())
         {
             ctx.Projects.AddRange(
-                new Models.Project { Name = "Strona WWW", Description = "Główny projekt" },
-                new Models.Project { Name = "Panel Admin", Description = "Konfiguracja" }
+                new Project { Name = "Strona WWW", Description = "Główny projekt" },
+                new Project { Name = "Panel Admin", Description = "Konfiguracja" }
             );
         }
 
         if (!await ctx.Categories.AnyAsync())
         {
             ctx.Categories.AddRange(
-                new Models.Category { Name = "Błąd", Description = "Błędy działania" },
-                new Models.Category { Name = "Usprawnienie", Description = "Propozycje zmian" }
+                new Category { Name = "Błąd", Description = "Błędy działania" },
+                new Category { Name = "Usprawnienie", Description = "Propozycje zmian" }
             );
         }
 
