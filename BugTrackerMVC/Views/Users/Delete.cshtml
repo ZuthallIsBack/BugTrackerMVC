@@ -1,0 +1,33 @@
+﻿@model BugTrackerMVC.Models.ViewModels.UserListItemVm
+
+<h2>Usuń użytkownika</h2>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="text-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <div>@error.ErrorMessage</div>
+        }
+    </div>
+}
+
+@if ((bool)(ViewBag.IsSelf ?? false))
+{
+    <div class="alert alert-warning">Nie możesz usunąć własnego konta administratora.</div>
+}
+
+<dl class="row">
+    <dt class="col-sm-3">Email</dt>
+    <dd class="col-sm-9">@Model.Email</dd>
+    <dt class="col-sm-3">Nazwa</dt>
+    <dd class="col-sm-9">@Model.DisplayName</dd>
+    <dt class="col-sm-3">Role</dt>
+    <dd class="col-sm-9">@Model.Roles</dd>
+</dl>
+
+<form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger" disabled="@((bool)(ViewBag.IsSelf ?? false))">Usuń</button>
+    <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+</form>

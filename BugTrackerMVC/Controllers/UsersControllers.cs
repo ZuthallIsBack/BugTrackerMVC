@@ -144,6 +144,60 @@ public class UsersController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+    public async Task<IActionResult> Delete(string id)
+    {
+        var user = await _userMgr.FindByIdAsync(id);
+        if (user is null) return NotFound();
+
+        var roles = await _userMgr.GetRolesAsync(user);
+        var vm = new UserListItemVm
+        {
+            Id = user.Id,
+            Email = user.Email ?? "",
+            DisplayName = user.DisplayName,
+            Roles = string.Join(", ", roles)
+        };
+
+        ViewBag.IsSelf = _userMgr.GetUserId(User) == user.Id;
+        return View(vm);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(string id, UserListItemVm vm)
+    {
+        if (id != vm.Id) return BadRequest();
+        var user = await _userMgr.FindByIdAsync(id);
+        if (user is null) return NotFound();
+
+        if (_userMgr.GetUserId(User) == user.Id)
+        {
+            ModelState.AddModelError(string.Empty, "Nie możesz usunąć własnego konta administratora.");
+            var roles = await _userMgr.GetRolesAsync(user);
+            vm.Email = user.Email ?? "";
+            vm.DisplayName = user.DisplayName;
+            vm.Roles = string.Join(", ", roles);
+            ViewBag.IsSelf = true;
+            return View(vm);
+        }
+
+        var result = await _userMgr.DeleteAsync(user);
+        if (!result.Succeeded)
+        {
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
+
+            var roles = await _userMgr.GetRolesAsync(user);
+            vm.Email = user.Email ?? "";
+            vm.DisplayName = user.DisplayName;
+            vm.Roles = string.Join(", ", roles);
+            ViewBag.IsSelf = false;
+            return View(vm);
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
+
 
     private async Task FillRoles(List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> roles)
     {

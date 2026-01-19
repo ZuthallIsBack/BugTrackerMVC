@@ -23,9 +23,11 @@
                     <td>@u.DisplayName</td>
                     <td>@u.Roles</td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@u.Id">Edytuj</a>
-                    </td>
+                    <a asp-action="Edit" asp-route-id="@u.Id">Edytuj</a>
+                        |
+                     <a asp-action="Delete" asp-route-id="@u.Id" class="text-danger">Usuń</a> </td>
                 </tr>
         }
     </tbody>
 </table>
+

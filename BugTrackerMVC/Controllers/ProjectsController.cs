@@ -46,4 +46,37 @@ public class ProjectsController : Controller
         await _ctx.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
+
+    public async Task<IActionResult> Delete(int id)
+    {
+        var project = await _ctx.Projects.FindAsync(id);
+        if (project is null) return NotFound();
+
+        var hasTickets = await _ctx.Tickets.AnyAsync(t => t.ProjectId == id);
+        ViewBag.HasTickets = hasTickets;
+        return View(project);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(int id, Project model)
+    {
+        if (id != model.Id) return BadRequest();
+        var project = await _ctx.Projects.FindAsync(id);
+        if (project is null) return NotFound();
+
+        var hasTickets = await _ctx.Tickets.AnyAsync(t => t.ProjectId == id);
+        if (hasTickets)
+        {
+            ModelState.AddModelError(string.Empty, "Nie można usunąć projektu, który ma przypisane zgłoszenia.");
+            ViewBag.HasTickets = true;
+            return View(project);
+        }
+
+        _ctx.Projects.Remove(project);
+        await _ctx.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+    }
 }
+
+

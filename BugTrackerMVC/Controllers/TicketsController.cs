@@ -151,7 +151,6 @@ public class TicketsController : Controller
         await _ctx.SaveChangesAsync();
         return RedirectToAction(nameof(Details), new { id = ticket.Id });
     }
-    
 
     [HttpPost]
     [ValidateAntiForgeryToken]

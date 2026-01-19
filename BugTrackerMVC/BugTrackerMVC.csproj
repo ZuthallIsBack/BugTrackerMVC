@@ -11,6 +11,8 @@
     <Compile Remove="Controllers\HomeController1.cs" />
     <Compile Remove="Views\Users\**\*.cshtml.cs" />
     <Compile Remove="Views\Tickets\**\*.cshtml.cs" />
+    <Compile Remove="Views\Users\Delete.cshtml" />
+    <Compile Remove="Views\Projects\Delete.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

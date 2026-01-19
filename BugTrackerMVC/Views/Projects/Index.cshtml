@@ -11,7 +11,11 @@
         <tr>
           <td>@p.Id</td>
           <td>@p.Name</td>
-          <td><a asp-action="Edit" asp-route-id="@p.Id">Edytuj</a></td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@p.Id">Edytuj</a>
+                |
+                <a asp-action="Delete" asp-route-id="@p.Id" class="text-danger">Usuń</a>
+              </td>
         </tr>
         }
   </tbody>
