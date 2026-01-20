@@ -1,0 +1,31 @@
+﻿@model BugTrackerMVC.Models.Category
+
+<h2>Usuń kategorię</h2>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="text-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <div>@error.ErrorMessage</div>
+        }
+    </div>
+}
+
+@if ((bool)(ViewBag.HasTickets ?? false))
+{
+        <div class="alert alert-warning">Projekt ma przypisane zgłoszenia. Usunięcie projektu spowoduje usunięcie powiązanych zgłoszeń.</div>
+}
+
+<dl class="row">
+    <dt class="col-sm-3">Nazwa</dt>
+    <dd class="col-sm-9">@Model.Name</dd>
+    <dt class="col-sm-3">Opis</dt>
+    <dd class="col-sm-9">@Model.Description</dd>
+</dl>
+
+<form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Usuń</button>
+    <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+</form>

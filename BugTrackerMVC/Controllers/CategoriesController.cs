@@ -46,4 +46,34 @@ public class CategoriesController : Controller
         await _ctx.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
+
+    public async Task<IActionResult> Delete(int id)
+    {
+        var category = await _ctx.Categories.FindAsync(id);
+        if (category is null) return NotFound();
+
+        var hasTickets = await _ctx.Tickets.AnyAsync(t => t.CategoryId == id);
+        ViewBag.HasTickets = hasTickets;
+        return View(category);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(int id, Category model)
+    {
+        if (id != model.Id) return BadRequest();
+        var category = await _ctx.Categories
+            .Include(c => c.Tickets)
+            .FirstOrDefaultAsync(c => c.Id == id);
+        if (category is null) return NotFound();
+
+        if (category.Tickets.Count > 0)
+        {
+            _ctx.Tickets.RemoveRange(category.Tickets);
+        }
+
+        _ctx.Categories.Remove(category);
+        await _ctx.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+    }
 }

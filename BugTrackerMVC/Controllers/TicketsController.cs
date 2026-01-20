@@ -152,9 +152,24 @@ public class TicketsController : Controller
         return RedirectToAction(nameof(Details), new { id = ticket.Id });
     }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
+    {
+        var userId = _userMgr.GetUserId(User);
+        var isAdmin = User.IsInRole("Admin");
+
+        var ticket = await _ctx.Tickets
+            .Include(t => t.Project)
+            .Include(t => t.Category)
+            .FirstOrDefaultAsync(t => t.Id == id);
+        if (ticket is null) return NotFound();
+        if (!isAdmin && ticket.OwnerId != userId) return Forbid();
+
+        return View(ticket);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Deleteconfirmed(int id)
     {
         var userId = _userMgr.GetUserId(User);
         var isAdmin = User.IsInRole("Admin");
@@ -167,7 +182,6 @@ public class TicketsController : Controller
         await _ctx.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
-
 
 
     private async Task FillLists(TicketFormVm vm)
