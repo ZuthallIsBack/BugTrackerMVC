@@ -13,7 +13,7 @@
 
 @if ((bool)(ViewBag.HasTickets ?? false))
 {
-    <div class="alert alert-warning">Projekt ma przypisane zgłoszenia i nie może zostać usunięty.</div>
+    <div class="alert alert-warning">Projekt ma przypisane zgłoszenia. Usunięcie projektu spowoduje usunięcie powiązanych zgłoszeń.</div>
 }
 
 <dl class="row">
@@ -25,6 +25,6 @@
 
 <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
     <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger" disabled="@((bool)(ViewBag.HasTickets ?? false))">Usuń</button>
+    <button type="submit" class="btn btn-danger">Usuń</button>
     <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
 </form>

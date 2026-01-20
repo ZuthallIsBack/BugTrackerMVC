@@ -62,15 +62,14 @@ public class ProjectsController : Controller
     public async Task<IActionResult> Delete(int id, Project model)
     {
         if (id != model.Id) return BadRequest();
-        var project = await _ctx.Projects.FindAsync(id);
+        var project = await _ctx.Projects
+            .Include(p => p.Tickets)
+            .FirstOrDefaultAsync(p => p.Id == id);
         if (project is null) return NotFound();
 
-        var hasTickets = await _ctx.Tickets.AnyAsync(t => t.ProjectId == id);
-        if (hasTickets)
+        if (project.Tickets.Count > 0)
         {
-            ModelState.AddModelError(string.Empty, "Nie można usunąć projektu, który ma przypisane zgłoszenia.");
-            ViewBag.HasTickets = true;
-            return View(project);
+            _ctx.Tickets.RemoveRange(project.Tickets);
         }
 
         _ctx.Projects.Remove(project);
