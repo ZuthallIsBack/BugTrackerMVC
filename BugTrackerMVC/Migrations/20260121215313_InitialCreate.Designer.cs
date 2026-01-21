@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BugTrackerMVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260118235144_InitialCreate")]
+    [Migration("20260121215313_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
