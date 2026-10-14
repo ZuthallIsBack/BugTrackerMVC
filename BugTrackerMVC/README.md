@@ -31,3 +31,26 @@ Przy starcie aplikacja robi seed danych (role, konta i przykładowe projekty/kat
 - Po zalogowaniu tworzy zgłoszenia (tickets), edytuje je, usuwa i dodaje komentarze.
 - Zwykły użytkownik widzi tylko swoje zgłoszenia, a administrator widzi wszystkie.
 - Administrator ma dodatkowo zarządzanie projektami, kategoriami oraz użytkownikami/rolami.
+
+## Walidacja zgłoszeń i testy
+
+MVC oraz `POST /api/tickets` i `PUT /api/tickets/{id}` korzystają ze wspólnego modelu
+`TicketInput`: tytuł musi mieć 5–120 znaków, opis 20–4000 znaków, a status i priorytet
+muszą być zdefiniowanymi wartościami enum. Projekt i kategoria muszą istnieć.
+API zwraca błędy walidacji jako HTTP 400 (`application/problem+json`) ze słownikiem
+`errors`, którego klucze wskazują nieprawidłowe pola. MVC wyświetla błędy w formularzu.
+
+Uruchomienie z katalogu rozwiązania, przy użyciu .NET SDK 8.x:
+
+```bash
+dotnet restore BugTrackerMVC.sln
+dotnet build BugTrackerMVC.sln --configuration Release --no-restore
+dotnet test BugTrackerMVC.sln --configuration Release --no-build
+```
+
+Testy integracyjne uruchamiają aplikację przez `WebApplicationFactory` z osobną bazą
+SQLite w pamięci i włączonymi kluczami obcymi. Podmieniają uwierzytelnianie wyłącznie
+w hoście testowym; właściwa autoryzacja, walidacja MVC/API i zapis przez EF Core
+pozostają aktywne. Obejmują wartości graniczne, błędne pola i relacje, brak zapisu
+po błędzie oraz dostęp właściciela i administratora. Workflow GitHub Actions
+uruchamia build i testy dla pull requestów do `master` oraz zmian na `master`.
