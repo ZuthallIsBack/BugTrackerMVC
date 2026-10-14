@@ -9,10 +9,12 @@ public class Ticket
 {
     public int Id { get; set; }
 
-    [Required, StringLength(120, MinimumLength = 5)]
+    [Required, StringLength(TicketValidationRules.TitleMaxLength,
+        MinimumLength = TicketValidationRules.TitleMinLength)]
     public string Title { get; set; } = "";
 
-    [Required, StringLength(4000, MinimumLength = 20)]
+    [Required, StringLength(TicketValidationRules.DescriptionMaxLength,
+        MinimumLength = TicketValidationRules.DescriptionMinLength)]
     public string Description { get; set; } = "";
 
     [Required]

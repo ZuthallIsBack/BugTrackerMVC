@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BugTrackerMVC.Data;
 using BugTrackerMVC.Models;
+using BugTrackerMVC.Validation;
 
 namespace BugTrackerMVC.Controllers.Api;
 
@@ -70,13 +71,11 @@ public class TicketsApiController : ControllerBase
         });
     }
 
-    public record TicketCreateDto(string Title, string Description, TicketStatus Status, TicketPriority Priority, int ProjectId, int CategoryId);
-
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] TicketCreateDto dto)
+    public async Task<IActionResult> Create([FromBody] TicketInput dto)
     {
-        if (dto.Title is null || dto.Title.Length < 5) return BadRequest("Title");
-        if (dto.Description is null || dto.Description.Length < 20) return BadRequest("Description");
+        await TicketReferenceValidator.ValidateAsync(_ctx, dto, ModelState);
+        if (!ModelState.IsValid) return ValidationProblem(ModelState);
 
         var userId = _userMgr.GetUserId(User) ?? "";
 
@@ -97,10 +96,8 @@ public class TicketsApiController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = t.Id }, new { t.Id });
     }
 
-    public record TicketUpdateDto(string Title, string Description, TicketStatus Status, TicketPriority Priority, int ProjectId, int CategoryId);
-
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, [FromBody] TicketUpdateDto dto)
+    public async Task<IActionResult> Update(int id, [FromBody] TicketInput dto)
     {
         var userId = _userMgr.GetUserId(User);
         var isAdmin = User.IsInRole("Admin");
@@ -108,6 +105,9 @@ public class TicketsApiController : ControllerBase
         var t = await _ctx.Tickets.FirstOrDefaultAsync(x => x.Id == id);
         if (t is null) return NotFound();
         if (!isAdmin && t.OwnerId != userId) return Forbid();
+
+        await TicketReferenceValidator.ValidateAsync(_ctx, dto, ModelState);
+        if (!ModelState.IsValid) return ValidationProblem(ModelState);
 
         t.Title = dto.Title;
         t.Description = dto.Description;

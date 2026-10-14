@@ -67,3 +67,6 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+
+// Expose the entry point to the integration test host.
+public partial class Program { }

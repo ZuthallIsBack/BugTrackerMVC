@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using BugTrackerMVC.Data;
 using BugTrackerMVC.Models;
 using BugTrackerMVC.Models.ViewModels;
+using BugTrackerMVC.Validation;
 
 namespace BugTrackerMVC.Controllers;
 
@@ -74,6 +75,7 @@ public class TicketsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(TicketFormVm vm)
     {
+        await TicketReferenceValidator.ValidateAsync(_ctx, vm, ModelState);
         if (!ModelState.IsValid)
         {
             await FillLists(vm);
@@ -134,6 +136,7 @@ public class TicketsController : Controller
         if (ticket is null) return NotFound();
         if (!isAdmin && ticket.OwnerId != userId) return Forbid();
 
+        await TicketReferenceValidator.ValidateAsync(_ctx, vm, ModelState);
         if (!ModelState.IsValid)
         {
             await FillLists(vm);
